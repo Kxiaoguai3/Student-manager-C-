@@ -33,21 +33,20 @@ class Database
 		~Database();
 		//初始化数据库
 		void Init();
-		//执行SQL语句
+		//执行SQL语句,定义是否打印结果集，自定义结果集数量
 		void Command(const char* command, bool printResult, int num);
-		void Command(const char* command, bool printResult = true);
-		//获取结果集
+		//执行SQL语句，默认打印结果集
+		void Command(const char* command, bool printResult = true, bool getResult = true);
+		//获取结果集，默认打印
 		void GetResult(int num = 6);
-
-
 		//添加学生信息
 		void AddStudent(Student* student);
 		//修改学生信息
-		void UpdateStudent(Student* student);
-		//获取学生信息
-		void GetStudent(const char* name);
+		void UpdateStudent(char* name_);
+		//获取学生信息, 默认不打印结果
+		void GetStudent(const char* name, bool printResult = false);
 		//删除学生信息
-		void DeleteStudent(char* name);
+		void DeleteStudent(const char* name);
 
 };
 

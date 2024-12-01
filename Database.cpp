@@ -8,6 +8,7 @@ using namespace std;
 
 //参数：服务器地址、用户名、密码、数据库名、端口号、socket指针、标记
 Database::Database(const char* server_, const char* user_, const char* passwd_, const char* db_, const int port_, const char* socket_, const int flag_) : server(server_), user(user_), passwd(passwd_), db(db_), port(port_), socket(socket_), flag(flag_) {Init();}
+
 //参数：服务器地址、用户名、密码、数据库名、端口号
 Database::Database(const char* server_, const char* user_, const char* passwd_, const char* db_, const int port_)    : server(server_), user(user_), passwd(passwd_), db(db_), port(port_) {Init();}
 
@@ -92,18 +93,20 @@ void Database::Command(const char* command, bool printResult, int num) {
 		}
 	}
 }
-//执行SQL命令，返回结果默认6列
-void Database::Command(const char* command, bool printResult) {
+
+//执行SQL命令，默认要输出,6列
+void Database::Command(const char* command, bool printResult, bool getResult = true) {
 	//执行SQL命令
+	//执行成功
 	if (!mysql_real_query(mysql, command, (unsigned int)strlen(command))) {
-		//执行成功
 		//有返回值
 		if (printResult) {
 			GetResult();
 		}
 		//没有返回值
 		else {
-
+			//记得删掉
+			cout << "当前没有返回值";
 		}
 	}
 	//执行失败
@@ -138,8 +141,8 @@ void Database::GetResult(int num) {
 		if (c == 'q') {
 			//退出程序
 			mysql_close(mysql);
-			free(mysql);
 			exit(0);
+			free(mysql);
 		}
 		else {
 			GetResult(num);
@@ -165,32 +168,90 @@ void Database::GetResult(int num) {
 }
 
 //获取学生信息
-void Database::GetStudent(const char* name) {
+void Database::GetStudent(const char* name, bool printResult) {
+	//构造SQL语句
 	string command = "SELECT * FROM student WHERE 姓名 = '" + string(name)+"'";
-	Command(command.c_str(), true);
+	
+	//执行SQL语句
+	Command(command.c_str(), printResult);
 }
 
 //添加学生信息
 void Database::AddStudent(Student* student){
-	//string command = "INSERT INTO student(姓名, 性别, 班级, 学号, 电话, 邮箱) VALUES("+student->name;
-	//cin >> student->name;         //姓名
-	//cin >> student->gender;       //性别
-	//cin >> student->age;          //年龄
-	//cin >> student->origin;       //籍贯
-	//cin >> student->address;      //住址
-	//cin >> student->phone;        //电话
-	string command = "INSERT INTO student(姓名, 性别, 年龄, 籍贯, 住址, 电话) VALUES('" +
-		student->name + "', '" +
-		student->gender + "', '" +
-		student->age + "', '" +
-		student->origin + "', '" +
-		student->phone + "');";
+	//设置添加学生的信息
+	student->SetInfo();
 
-	
+	//拿出学生的信息
+	string name = student->name;
+	string gender = student->gender;
+	string age = student->age;
+	string origin = student->origin;
+	string address = student->address;
+	string phone = student->phone;
+
+	//构造SQL语句
+	string command = "INSERT INTO student(姓名, 性别, 年龄, 籍贯, 住址, 联系方式) VALUES('" +
+		name + "', '" +
+		gender + "', '" +
+		age + "', '" +
+		origin + "', '" +
+		address + "', '" +
+		phone + "');";
+
+	//执行SQL语句
+	Command(command.c_str(), false);
+
+	//记得删掉
+	cout << "添加成功！" << endl;
 }
 
 //修改学生信息
-void Database::UpdateStudent(Student* student){}
+void Database::UpdateStudent(char* name_){
+	string name = string(name_);
+	//由于学生在数据库中没有排序，所以先删除，再添加
+	//获取学生信息
+	/*string name = student->name;
+	string gender = student->gender;
+	string age = student->age;
+	string origin = student->origin;
+	string address = student->address;
+	string phone = student->phone;*/
+
+	//获取学生信息
+	//构造SQL语句
+	string command = "SELECT * FROM student WHERE 姓名 = '" + name + "';";
+
+	//执行SQL语句
+	Command(command.c_str(), true);
+
+	
+	//询问删除
+	char* updateInfo = new char[20];
+	cout << "输入要修改的信息";
+	cin >> updateInfo;
+
+	//开始判断修改信息
+	if()
+
+	//删除学生信息
+	DeleteStudent(name.c_str());
+
+	//添加学生信息
+	AddStudent(student);
+    //记得删掉
+	cout << "修改成功！" << endl;
+}
 
 //删除学生信息
-void Database::DeleteStudent(char* name){}
+void Database::DeleteStudent(const char* name){
+	//删除姓名为name的学生
+	//构造SQL语句
+	string command = "DELETE FROM student WHERE 姓名 = '" + string(name) + "';";
+
+	//执行SQL语句
+	Command(command.c_str(), false);
+
+	//记得删掉
+	cout << "删除成功！" << endl;
+}
+

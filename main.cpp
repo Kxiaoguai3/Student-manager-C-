@@ -15,17 +15,28 @@ int main()
     */
     
     Database db = Database("127.0.0.1", "root", "147258369", "studentmanger", 3306);
+    Student *student = new Student();
 
-    //db.Command("select * from student", 1);
-    char* name = new char[10];
+    //Ìí¼Ó²âÊÔ
+    //db.AddStudent(student);
 
-    while(true) {
+    //»ñÈ¡²âÊÔ
+    /*while(true) {
         cout << "ÇëÊäÈëÑ§ÉúĞÕÃû£º";
         cin >> name;
-        db.GetStudent(name);
+        db.GetStudent(name, true);
         system("pause");
 
-    }
+    }*/
+
+    //ĞŞ¸Ä²âÊÔ
+
+
+
+    //É¾³ı²âÊÔ
+    /*char* name = new char[20];
+    cin >> name;
+    db.DeleteStudent(name);*/
 
     return 0;
 }

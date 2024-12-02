@@ -14,6 +14,7 @@ int main()
         4.账户系统
     */
     
+    //创建数据库对象
     Database db = Database("127.0.0.1", "root", "147258369", "studentmanger", 3306);
     Student *student = new Student();
 
@@ -30,7 +31,12 @@ int main()
     }*/
 
     //修改测试
-
+    char* name = new char[20];
+    cout << "请输入修改学生姓名：";
+    cin >> name;
+    db.UpdateStudent(name);
+    string command = "SELECT * FROM student WHERE 姓名 = '" + string(name) + "';";
+    db.Command(command.c_str());
 
 
     //删除测试
